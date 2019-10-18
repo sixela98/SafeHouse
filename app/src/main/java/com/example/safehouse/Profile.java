@@ -5,7 +5,6 @@ public class Profile {
     private String name;
     private int age;
     private int studentID;
-    public int useless;
 
     public Profile(String name, int age, int studentID) {
         this.name = name;
