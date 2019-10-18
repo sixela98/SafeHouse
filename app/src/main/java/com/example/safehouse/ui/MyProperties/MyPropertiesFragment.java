@@ -1,4 +1,4 @@
-package com.example.safehouse.ui.MyProfiles;
+package com.example.safehouse.ui.MyProperties;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.safehouse.R;
 
-public class MyProflesFragment extends Fragment {
+public class MyPropertiesFragment extends Fragment {
 
-    private MyProfilesViewModel galleryViewModel;
+    private MyPropertiesViewModel myPropertiesViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel =
-                ViewModelProviders.of(this).get(MyProfilesViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_myprofiles, container, false);
-        final TextView textView = root.findViewById(R.id.text_myprofiles);
-        galleryViewModel.getText().observe(this, new Observer<String>() {
+        myPropertiesViewModel =
+                ViewModelProviders.of(this).get(MyPropertiesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_myproperties, container, false);
+        final TextView textView = root.findViewById(R.id.text_myproperties);
+        myPropertiesViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
