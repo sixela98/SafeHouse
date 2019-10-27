@@ -1,37 +1,43 @@
 package com.example.safehouse;
 
+import com.example.safehouse.object_classes.Property;
+
+import java.util.ArrayList;
+
 public class Profile {
 
     private String name;
-    private int age;
-    private int studentID;
+    private ArrayList<Property> properties;
 
-    public Profile(String name, int age, int studentID) {
+    public Profile(String name) {
         this.name = name;
-        this.age = age;
-        this.studentID = studentID;
+    }
+
+    public void addProperty(Property property) {
+        this.properties.add(property);
+    }
+
+    public Property getProperty(int index) {
+        return this.properties.get(index);
     }
 
     //Getters
     public String getName() {
         return name;
     }
-    public int getAge() {
-        return age;
-    }
-    public int getStudentID() {
-        return studentID;
+
+    public ArrayList<Property> getProperties() {
+        return properties;
     }
 
     //Setters
     public void setName(String name) {
         this.name = name;
     }
-    public void setAge(int age) {
-        this.age = age;
+
+    public void setProperties(ArrayList<Property> properties) {
+        this.properties = properties;
     }
-    public void setStudentID(int studentID) {
-        this.studentID = studentID;
-    }
+
 
 }
