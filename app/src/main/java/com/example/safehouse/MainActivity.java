@@ -79,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List notes = new ArrayList<>();
-                Boolean Title = dataSnapshot.getValue(Boolean.class);
-                if(Title==true){
+                Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
+                if(water_sensor==true){
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "This is TRUE",
                             Toast.LENGTH_LONG);
 
                     toast.show();
                 }
-                if(Title==false){
+                if(water_sensor==false){
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "This is FALSE",
                             Toast.LENGTH_LONG);
