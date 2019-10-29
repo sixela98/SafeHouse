@@ -72,37 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onStart() {
     super.onStart();
-        DatabaseReference mDatabase;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.child("sensor").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List notes = new ArrayList<>();
-                Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
-                if(water_sensor==true){
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "This is TRUE",
-                            Toast.LENGTH_LONG);
-
-                    toast.show();
-                }
-                if(water_sensor==false){
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "This is FALSE",
-                            Toast.LENGTH_LONG);
-
-                    toast.show();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
         String name = sharedPreferenceHelper.getProfileName();
         if(name == null)
             launchLogginActivity();
