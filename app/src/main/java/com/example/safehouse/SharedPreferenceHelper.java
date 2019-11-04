@@ -11,9 +11,7 @@ public class SharedPreferenceHelper {
     }
 
     public void saveProfile(Profile profile) {
-        saveProfileAge(profile);
         saveProfileName(profile);
-        saveProfileStudentID(profile);
     }
 
     public void saveProfileName(Profile profile) {
@@ -22,26 +20,10 @@ public class SharedPreferenceHelper {
         editor.commit();
     }
 
-    public void saveProfileAge(Profile profile) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("profileAge", profile.getAge());
-        editor.commit();
-    }
 
-    public void saveProfileStudentID(Profile profile) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("profileStudentID", profile.getStudentID());
-        editor.commit();
-    }
 
     public String getProfileName() {
         return sharedPreferences.getString("profileName", null);
-    }
-    public int getProfileAge() {
-        return sharedPreferences.getInt("profileAge", -1);
-    }
-    public int getProfileStudentID() {
-        return sharedPreferences.getInt("profileStudentID", -1);
     }
 
     public void clear() {
