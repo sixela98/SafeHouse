@@ -7,6 +7,7 @@ public class Property {
     private int id;
     private String name;
     private ArrayList<WaterSensor> sensors;
+    private Boolean selected;
 
     public Property(int id, String name) {
         this.id = id;
@@ -43,5 +44,13 @@ public class Property {
 
     public WaterSensor getSensor(int index) {
         return this.sensors.get(index);
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 }
