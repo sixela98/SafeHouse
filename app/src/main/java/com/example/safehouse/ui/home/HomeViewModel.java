@@ -21,12 +21,11 @@ import java.util.List;
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
-    private MutableLiveData<ArrayList<String>> mDevices;
+    private ArrayList<MutableLiveData<String>> mDevices = new ArrayList<>();
+    private final DatabaseReference mDatabase;
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
-        mDevices = new MutableLiveData<>();
-        final DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mDatabase.child("sensor").addValueEventListener(new ValueEventListener() {
@@ -50,39 +49,7 @@ public class HomeViewModel extends ViewModel {
 
         });
 
-  /*      mDatabase.child("Property1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long numChildren = dataSnapshot.getChildrenCount();
-                final ArrayList<String> newDev = new ArrayList<>();
-                for(long i = 1; i <= numChildren; i++) {
-                    mDatabase.child("Property1").child("Water sensor " + i).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
-                            if(water_sensor==true){
-                                newDev.add("Water Sensor is Wet ");
-                            }
-                            if(water_sensor==false){
-                                newDev.add("Water Sensor is Dry");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-                mDevices.setValue(newDev);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });*/
+        updateWaterSensors();
 
         //setMyProperties();
     }
@@ -91,7 +58,37 @@ public class HomeViewModel extends ViewModel {
         return mText;
     }
 
-    public MutableLiveData<ArrayList<String>> getmDevices() {
+    public ArrayList<MutableLiveData<String>> getmDevices() {
         return mDevices;
+    }
+
+    public MutableLiveData<String> updateWaterSensor(String porperty, int id) {
+        final MutableLiveData<String> sensor = new MutableLiveData<>();
+        mDatabase.child(porperty).child("Water sensor " + id).child("State").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
+                if(water_sensor==true){
+                    sensor.setValue("Water Sensor " + id + " is Wet");
+                }
+                if(water_sensor==false){
+                    sensor.setValue("Water Sensor " + id + " is Dry");
+                }
+            }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+
+    });
+        return sensor;
+}
+    public void updateWaterSensors() {
+        mDevices.clear();
+        int numDevices = 2;
+        for(int i = 1; i <= numDevices; i++) {
+            mDevices.add(updateWaterSensor("Property1", i));
+        }
     }
 }
