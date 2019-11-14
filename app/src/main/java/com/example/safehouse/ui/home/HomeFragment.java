@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private ArrayList<String> listProperty = new ArrayList<>();
     private ArrayList<String> listHome = new ArrayList<>();
     private ArrayAdapter homeAdapter;
 
@@ -37,16 +36,12 @@ public class HomeFragment extends Fragment {
                 textView.setText(s);
             }
         });
-        final ListView propertyListView = root.findViewById(R.id.listView_property);
         final ListView homeListView = root.findViewById(R.id.listView_home);
-        listProperty.add("Property");
-        //listHome.add("Home");
         int numdevices = 2;
         for(int i = 1; i <= numdevices; i++) {
             observeDevice(i, homeListView);
         }
-        ArrayAdapter propertyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listProperty);
-        propertyListView.setAdapter(propertyAdapter);
+
 
         return root;
     }

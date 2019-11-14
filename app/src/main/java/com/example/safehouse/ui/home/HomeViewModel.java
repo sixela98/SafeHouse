@@ -62,10 +62,10 @@ public class HomeViewModel extends ViewModel {
         return mDevices;
     }
 
-    public MutableLiveData<String> updateWaterSensor(String porperty, int id) {
+    public MutableLiveData<String> updateWaterSensor(String property, int id) {
         final MutableLiveData<String> sensor = new MutableLiveData<>();
-        mDatabase.child(porperty).child("Water sensor " + id).child("State").addValueEventListener(new ValueEventListener() {
-            @Override
+        mDatabase.child(property).child("Water sensor " + id).child("State").addValueEventListener(new ValueEventListener() {
+                @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
                 if(water_sensor==true){
