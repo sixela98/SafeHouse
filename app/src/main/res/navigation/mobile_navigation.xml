@@ -27,4 +27,8 @@
         android:name="com.example.safehouse.ui.help.HelpFragment"
         android:label="@string/menu_help"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/nav_disconnect"
+        android:name="com.example.safehouse.ui.disconnect.DisconnectFragment"
+        android:label="@string/menu_disconnect" />
 </navigation>

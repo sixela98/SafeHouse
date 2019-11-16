@@ -4,6 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ListView
+        android:id="@+id/listView_property"
+        android:layout_width="283dp"
+        android:layout_height="606dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_myproperties" />
+
     <TextView
         android:id="@+id/text_myproperties"
         android:layout_width="match_parent"

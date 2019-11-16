@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Add a device to be implemented", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -91,10 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    //Launching the profile activity when the profileButton is pressed. onClick() handled in content_main.xml file
     void launchLogginActivity(){
         Intent intent = new Intent(this, LogginActivity.class);
         startActivity(intent);
     }
-
 }
