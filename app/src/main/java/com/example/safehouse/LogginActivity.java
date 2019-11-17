@@ -19,7 +19,8 @@ public class LogginActivity extends AppCompatActivity {
 
     protected boolean correctInputs;                                    //Boolean which is set to false if an input is incorrect
     protected Button save_button = null;                                //Button to save the profile
-    protected TextInputEditText editTextName;                           //Text that contains the name which can be editing
+    protected TextInputEditText editTextName;                           //Text that contains the name which can be edited
+    protected TextInputEditText editTextPassword;
     protected TextInputLayout layoutName;                               //Layout of the name
     protected SharedPreferenceHelper sharedPreferenceHelper;            //SharedPreferenceHelper that will handle saving/editing the user profile
 
@@ -36,13 +37,18 @@ public class LogginActivity extends AppCompatActivity {
                 if(editTextName.getText().toString().isEmpty()) {
                     layoutName.setError("Name cannot be empty");
                     correctInputs = false;
-                }else {
+                }
+                if(editTextPassword.getText().toString().isEmpty()){
+                    layoutName.setError("Password cannot be empty");
+                    correctInputs = false;
+                }
+                else {
                     layoutName.setError(null);
                 }
                 if(correctInputs) {
-                    Profile profile = new Profile(editTextName.getText().toString());
+                    Profile profile = new Profile(editTextName.getText().toString(),editTextPassword.getText().toString());
                     sharedPreferenceHelper.saveProfile(profile);
-                    Toast toast = Toast.makeText(getApplicationContext(), "saved" , Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Profile Saved" , Toast.LENGTH_LONG);
                     toast.show();
                     launchMainActivity();
                 }
@@ -53,6 +59,7 @@ public class LogginActivity extends AppCompatActivity {
     //Setup the UI with the desired element
     protected void setupUI() {
         editTextName = findViewById(R.id.editTextName);
+        editTextPassword = findViewById(R.id.editTextPassword);
         save_button = findViewById(R.id.saveButton);
         layoutName = findViewById(R.id.layoutName);
         sharedPreferenceHelper = new SharedPreferenceHelper(LogginActivity.this);
