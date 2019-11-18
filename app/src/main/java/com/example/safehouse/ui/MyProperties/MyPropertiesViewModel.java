@@ -19,105 +19,146 @@ import java.util.ArrayList;
 
 public class MyPropertiesViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
-    private ArrayList<MutableLiveData<String>> mProperties = new ArrayList<>();
+    private MutableLiveData<String> mSelected;
+    private MutableLiveData<String> mDefault;
+    private ArrayList<MutableLiveData<String>> mProperty_1 = new ArrayList<>();
+    private ArrayList<MutableLiveData<String>> mProperty_2 = new ArrayList<>();
     private final DatabaseReference mDatabase;
 
-
     public MyPropertiesViewModel() {
-        mText = new MutableLiveData<>();
+        mSelected = new MutableLiveData<>();
+        mDefault= new MutableLiveData<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mText.setValue(updateDefault() + "\n " + updateSelected());
         updateProperties();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public ArrayList<MutableLiveData<String>> getmProperty(int propertyChoice) {
+        ArrayList<MutableLiveData<String>> choice = new ArrayList<>();
+        switch(propertyChoice){
+            case 1:
+                choice = mProperty_1;
+                break;
+            case 2:
+                choice = mProperty_2;
+                break;
+        }
+        return choice;
     }
 
-    public ArrayList<MutableLiveData<String>> getmProperties() {
-        return mProperties;
+
+    public LiveData<String> getSelected() {
+        return mSelected;
     }
 
-    public boolean isDefault(int id){
-        final MutableLiveData<Boolean> isDefault = new MutableLiveData<>();
+    public MutableLiveData<String> getmDefault() {
+        return mDefault;
+    }
+
+    public ArrayList<MutableLiveData<String>> getmProperty_1() {
+        return mProperty_1;
+    }
+
+    public ArrayList<MutableLiveData<String>> getmProperty_2() {
+        return mProperty_2;
+    }
+
+    public MutableLiveData<String> updatePropertyName(int id) {
+        final MutableLiveData<String> propertyName = new MutableLiveData<>();
+        mDatabase.child("Property" + id).child("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.getValue(String.class);
+                propertyName.setValue(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return propertyName;
+    }
+
+    public MutableLiveData<String> updatePropertyDefault(int id) {
+        final MutableLiveData<String> propertyDefault = new MutableLiveData<>();
         mDatabase.child("Property" + id).child("Default").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean default_sensor = dataSnapshot.getValue(boolean.class);
-                if(default_sensor == true) {
-                    isDefault.setValue(true);
+                Boolean Default = dataSnapshot.getValue(Boolean.class);
+                if(Default==true){
+                    propertyDefault.setValue("Default: True ");
                 }
-                if(default_sensor == false) {
-                    isDefault.setValue(false);
-                }
-                System.out.println("default" + id + " " + default_sensor + " " + isDefault.getValue());
-            }
+                if(Default==false){
+                    propertyDefault.setValue("Default: False");
+                }            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
-
-       // boolean result = isDefault.getValue();
-        return true;//result;
+        return propertyDefault;
     }
 
-    public String updateDefault() {
-        int numProperties = 2;
-        String defaultText  = "Not set";
-        for(int i = 1; i <= numProperties; i++) {
-            if(isDefault(i)) {
-                defaultText = "Default property: Property" + i;
-                break;
-            }
-        }
-        return defaultText;
-    }
-
-    public boolean isSelected(int id) {
-        ArrayList<Boolean> isSelected = new ArrayList<>();
+    public MutableLiveData<String> updatePropertySelected(int id) {
+        final MutableLiveData<String> propertySelected = new MutableLiveData<>();
         mDatabase.child("Property" + id).child("Selected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean selected_sensor = dataSnapshot.getValue(boolean.class);
-                isSelected.add(selected_sensor);
-                System.out.println("selected" + id + " " + selected_sensor + " " + isSelected.get(0));
+                Boolean Selected = dataSnapshot.getValue(Boolean.class);
+                if(Selected==true){
+                    propertySelected.setValue("Selected: True ");
+                }
+                if(Selected==false){
+                    propertySelected.setValue("Selected: False");
+                }            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return propertySelected;
+    }
+
+   /* public MutableLiveData<String> updatePropertyDevices(int id) {
+        final MutableLiveData<String> propertyName = new MutableLiveData<>();
+        mDatabase.child("Property" + id).child("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.getValue(String.class);
+                propertyName.setValue(name);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
+        return propertyName;
+    }*/
 
-        return true;//isSelected.get(0);
-    }
-
-    public String updateSelected() {
-        int numProperties = 2;
-        String selectedText  = "Not set";
-        for(int i = 1; i <= numProperties; i++) {
-            if(isSelected(i)) {
-                selectedText = "Selected property: Property" + i;
-                break;
-            }
-        }
-        return selectedText;
-    }
-
-    public MutableLiveData<String> updateProperty(int id) {
-        MutableLiveData<String> property = new MutableLiveData<>();
-        property.setValue("Default: " + isDefault(id) +
-                            "\nSelected: " + isSelected(id));
-        return property;
-    }
     public void updateProperties() {
-        mProperties.clear();
+        mProperty_1.clear();
+        mProperty_2.clear();
         int numProperties = 2;
         for(int i = 1; i <= numProperties; i++) {
-            mProperties.add(updateProperty(i));
+            switch (i){
+                case 1:
+                    mProperty_1.add(updatePropertyName(i));
+                    mProperty_1.add(updatePropertySelected(i));
+                    mProperty_1.add(updatePropertyDefault(i));
+                    break;
+                case 2:
+                    mProperty_2.add(updatePropertyName(i));
+                    mProperty_2.add(updatePropertySelected(i));
+                    mProperty_2.add(updatePropertyDefault(i));
+                    break;
+            }
         }
     }
 }

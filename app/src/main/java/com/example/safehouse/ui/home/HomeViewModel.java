@@ -61,10 +61,10 @@ public class HomeViewModel extends ViewModel {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Boolean water_sensor = dataSnapshot.getValue(Boolean.class);
                 if(water_sensor==true){
-                    sensor.setValue("Water Sensor is Wet\n");
+                    sensor.setValue("Water Sensor is Wet");
                 }
                 if(water_sensor==false){
-                    sensor.setValue("Water Sensor is Dry\n");
+                    sensor.setValue("Water Sensor is Dry");
                 }
             }
 
@@ -83,7 +83,7 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.getValue(String.class);
-                sensor.setValue(name + "\n");
+                sensor.setValue(name);
             }
 
             @Override
@@ -94,6 +94,7 @@ public class HomeViewModel extends ViewModel {
         });
         return sensor;
     }
+
     public void updateWaterSensors() {
         water_sensor_1.clear();
         water_sensor_2.clear();
