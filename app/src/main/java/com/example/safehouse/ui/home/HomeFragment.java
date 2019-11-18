@@ -27,11 +27,15 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private SimpleAdapter homeAdapter;
-    private RelativeLayout water_sensor_layout;
-    private TextView water_sensor_name;
-    private TextView water_sensor_state;
+    private RelativeLayout water_sensor_layout_1;
+    private TextView water_sensor_name_1;
+    private TextView water_sensor_state_1;
+    private RelativeLayout water_sensor_layout_2;
+    private TextView water_sensor_name_2;
+    private TextView water_sensor_state_2;
     private TextView water_sensor_title;
+    private int numdevices = 2;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,35 +51,54 @@ public class HomeFragment extends Fragment {
         });
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
         water_sensor_title.setText("My water sensors");
-        water_sensor_layout = root.findViewById(R.id.water_sensor_1_test);
-        water_sensor_name = water_sensor_layout.findViewById(R.id.water_sensor_name);
-        water_sensor_state = water_sensor_layout.findViewById(R.id.water_sensor_state);
-        int numdevices = 2;
         for(int i = 1; i <= numdevices; i++) {
-            observeDevice(i);
+            observeDevice(i, root);
         }
-
-
         return root;
     }
 
-    public void observeDevice(int id) {
+    public void observeDevice(int id, View root) {
         switch (id){
             case 1:
+                water_sensor_layout_1 = root.findViewById(R.id.water_sensor_1);
+                water_sensor_name_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_name);
+                water_sensor_state_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_state);
                 homeViewModel.getmDevice(id).get(0).observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-                        water_sensor_name.setText(s);
+                        water_sensor_name_1.setText(s);
                     }
                 });
                 homeViewModel.getmDevice(id).get(1).observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-                        water_sensor_state.setText(s);
+                        water_sensor_state_1.setText(s);
                         if(s.contains("Dry")){
-                            water_sensor_layout.setBackgroundColor(Color.GREEN);
+                            water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));                   }else if(s.contains("Wet")) {
+                        } else if(s.contains("Wet")){
+                            water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
+                    }
+                });
+                break;
+            case 2:
+                water_sensor_layout_2 = root.findViewById(R.id.water_sensor_2);
+                water_sensor_name_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_name);
+                water_sensor_state_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_state);
+                homeViewModel.getmDevice(id).get(0).observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        water_sensor_name_2.setText(s);
+                    }
+                });
+                homeViewModel.getmDevice(id).get(1).observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        water_sensor_state_2.setText(s);
+                        if(s.contains("Dry")){
+                            water_sensor_layout_2.setBackgroundColor(Color.GREEN);
                         }else if(s.contains("Wet")){
-                            water_sensor_layout.setBackgroundColor(Color.RED);
+                            water_sensor_layout_2.setBackgroundColor(Color.RED);
                         }
                     }
                 });
