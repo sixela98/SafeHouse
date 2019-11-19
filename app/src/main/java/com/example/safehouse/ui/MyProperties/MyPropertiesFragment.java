@@ -90,6 +90,16 @@ public class MyPropertiesFragment extends Fragment {
                         Toast.makeText(getActivity(), "Clicked on Property 1", Toast.LENGTH_SHORT).show();
                     }
                 });
+                property_layout_1.setOnLongClickListener(new View.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(View view) {
+                        setDefault("Property1", true);
+                        setDefault("Property2", false);
+                        //Show a toast message
+                        Toast.makeText(getActivity(), "Hold on Property 1", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
                 break;
             case 2:
                 property_layout_2 = root.findViewById(R.id.property_2);
@@ -129,11 +139,25 @@ public class MyPropertiesFragment extends Fragment {
                         Toast.makeText(getActivity(), "Clicked on Property 2", Toast.LENGTH_SHORT).show();
                     }
                 });
+                property_layout_2.setOnLongClickListener(new View.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(View view) {
+                        setDefault("Property2", true);
+                        setDefault("Property1", false);
+                        //Show a toast message
+                        Toast.makeText(getActivity(), "Hold on Property 2", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
                 break;
         }
     }
 
     public void setSelected(String property, boolean selected) {
         mDatabase.child(property).child("Selected").setValue(selected);
+    }
+
+    public void setDefault(String property, boolean Default) {
+        mDatabase.child(property).child("Default").setValue(Default);
     }
 }
