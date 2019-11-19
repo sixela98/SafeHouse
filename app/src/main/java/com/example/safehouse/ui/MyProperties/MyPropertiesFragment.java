@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.safehouse.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,7 @@ public class MyPropertiesFragment extends Fragment {
     private TextView property_selected_2;
     private TextView property_default_2;
     private int numproperty = 2;
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
 
@@ -39,7 +43,7 @@ public class MyPropertiesFragment extends Fragment {
                 ViewModelProviders.of(this).get(MyPropertiesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_myproperties, container, false);
         selectedProperty = root.findViewById(R.id.selectedTextView);
-        defaultProperty = root.findViewById(R.id.defaultTextView);;
+        defaultProperty = root.findViewById(R.id.defaultTextView);
         for(int i = 1; i <= numproperty; i++) {
             observeProperty(i, root);
         }
@@ -77,6 +81,15 @@ public class MyPropertiesFragment extends Fragment {
                         }
                     }
                 });
+                property_layout_1.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        setSelected("Property1", true);
+                        setSelected("Property2", false);
+                        //Show a toast message
+                        Toast.makeText(getActivity(), "Clicked on Property 1", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             case 2:
                 property_layout_2 = root.findViewById(R.id.property_2);
@@ -94,7 +107,7 @@ public class MyPropertiesFragment extends Fragment {
                     public void onChanged(String s) {
                         property_selected_2.setText(s);
                         if (s.contains("True")) {
-                            selectedProperty.setText("Selected: 1");
+                            selectedProperty.setText("Selected: 2");
                         }
                     }
                 });
@@ -103,11 +116,24 @@ public class MyPropertiesFragment extends Fragment {
                     public void onChanged(String s) {
                         property_default_2.setText(s);
                         if (s.contains("True")) {
-                            defaultProperty.setText("Default: 1");
+                            defaultProperty.setText("Default: 2");
                         }
+                    }
+                });
+                property_layout_2.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        setSelected("Property2", true);
+                        setSelected("Property1", false);
+                        //Show a toast message
+                        Toast.makeText(getActivity(), "Clicked on Property 2", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
         }
+    }
+
+    public void setSelected(String property, boolean selected) {
+        mDatabase.child(property).child("Selected").setValue(selected);
     }
 }

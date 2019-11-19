@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final View root = inflater.inflate(R.layout.fragment_home, container, false);
         notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(this, new Observer<String>() {
@@ -52,10 +52,7 @@ public class HomeFragment extends Fragment {
             }
         });
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
-        water_sensor_title.setText("My water sensors");
-        for(int i = 1; i <= numdevices; i++) {
-            observeDevice(i, root);
-        }
+        updateUI(root);
         button = (Button)root.findViewById(R.id.air_quality_1);
         return root;
     }
@@ -89,58 +86,101 @@ public class HomeFragment extends Fragment {
         notificationManager.notify(/*notification id*/id, notificationBuilder.build());
     }
 
-    public void observeDevice(int id, View root) {
-        switch (id){
+    public void updateUI(View root){
+        water_sensor_title.setText("My water sensors");
+        homeViewModel.getSelectedProperty().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s.contains("Property1")){
+                    for(int i = 1; i <= numdevices; i++) {
+                        observeDevice(1, i, root);
+                    }
+                }else if(s.contains("Property2")) {
+                    observeDevice(2,1, root);
+                }
+            }
+        });
+    }
+
+    public void observeDevice(int propertyid, int deviceid, View root) {
+        switch(propertyid) {
             case 1:
+                switch (deviceid) {
+                    case 1:
+                        water_sensor_layout_1 = root.findViewById(R.id.water_sensor_1);
+                        water_sensor_name_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_name);
+                        water_sensor_state_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_state);
+                        homeViewModel.getmDevice(propertyid, deviceid).get(0).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                water_sensor_name_1.setText(s);
+                            }
+                        });
+                        homeViewModel.getmDevice(propertyid, deviceid).get(1).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                water_sensor_state_1.setText(s);
+                                if (s.contains("Dry")) {
+                                    sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                                    water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
+
+                                } else if (s.contains("Wet")) {
+                                    sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                                    water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
+                                }
+                            }
+                        });
+                        break;
+                    case 2:
+                        water_sensor_layout_2 = root.findViewById(R.id.water_sensor_2);
+                        water_sensor_name_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_name);
+                        water_sensor_state_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_state);
+                        homeViewModel.getmDevice(propertyid, deviceid).get(0).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                water_sensor_name_2.setText(s);
+                            }
+                        });
+                        homeViewModel.getmDevice(propertyid, deviceid).get(1).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                water_sensor_state_2.setText(s);
+                                if (s.contains("Dry")) {
+                                    sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
+                                    water_sensor_layout_2.setBackgroundColor(Color.GREEN);
+                                } else if (s.contains("Wet")) {
+                                    sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
+                                    water_sensor_layout_2.setBackgroundColor(Color.RED);
+                                }
+                            }
+                        });
+                        break;
+                }
+                break;
+            case 2:
                 water_sensor_layout_1 = root.findViewById(R.id.water_sensor_1);
                 water_sensor_name_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_name);
                 water_sensor_state_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_state);
-                homeViewModel.getmDevice(id).get(0).observe(this, new Observer<String>() {
+                homeViewModel.getmDevice(propertyid, deviceid).get(0).observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
                         water_sensor_name_1.setText(s);
                     }
                 });
-                homeViewModel.getmDevice(id).get(1).observe(this, new Observer<String>() {
+                homeViewModel.getmDevice(propertyid, deviceid).get(1).observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
                         water_sensor_state_1.setText(s);
-                        if(s.contains("Dry")){
+                        if (s.contains("Dry")) {
                             sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
                             water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
 
-                        } else if(s.contains("Wet")){
+                        } else if (s.contains("Wet")) {
                             sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
                             water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
                         }
                     }
                 });
-                break;
-            case 2:
-                water_sensor_layout_2 = root.findViewById(R.id.water_sensor_2);
-                water_sensor_name_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_name);
-                water_sensor_state_2 = water_sensor_layout_2.findViewById(R.id.water_sensor_state);
-                homeViewModel.getmDevice(id).get(0).observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String s) {
-                        water_sensor_name_2.setText(s);
-                    }
-                });
-                homeViewModel.getmDevice(id).get(1).observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String s) {
-                        water_sensor_state_2.setText(s);
-                        if(s.contains("Dry")){
-                            sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
-                            water_sensor_layout_2.setBackgroundColor(Color.GREEN);
-                        }else if(s.contains("Wet")){
-                            sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
-                            water_sensor_layout_2.setBackgroundColor(Color.RED);
-                        }
-                    }
-                });
-                break;
         }
-
     }
 }
