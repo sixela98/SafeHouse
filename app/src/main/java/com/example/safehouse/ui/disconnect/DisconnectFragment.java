@@ -9,13 +9,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.safehouse.LogginActivity;
+import com.example.safehouse.SignIn;
 
 public class DisconnectFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(getActivity(), LogginActivity.class);
+        Intent intent = new Intent(getActivity(), SignIn.class);
         startActivity(intent);
     }
+    //@Override
+
 }

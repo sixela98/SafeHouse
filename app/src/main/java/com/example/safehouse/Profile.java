@@ -7,12 +7,16 @@ import java.util.ArrayList;
 public class Profile {
 
     private String name;
+    private String password;
     private ArrayList<Property> properties;
 
     public Profile(String name) {
         this.name = name;
     }
-
+    public Profile(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
     public void addProperty(Property property) {
         this.properties.add(property);
     }
@@ -26,6 +30,8 @@ public class Profile {
         return name;
     }
 
+    public String getPassword(){ return password;}
+
     public ArrayList<Property> getProperties() {
         return properties;
     }
@@ -33,6 +39,10 @@ public class Profile {
     //Setters
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 
     public void setProperties(ArrayList<Property> properties) {
