@@ -1,15 +1,10 @@
 package com.example.safehouse.ui.home;
 
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.safehouse.object_classes.Property;
-import com.example.safehouse.object_classes.WaterSensor;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
@@ -27,8 +21,8 @@ public class HomeViewModel extends ViewModel {
     private ArrayList<MutableLiveData<String>> water_sensor_2 = new ArrayList<>();
     private ArrayList<MutableLiveData<String>> air_quality_1 = new ArrayList<>();
     private final DatabaseReference mDatabase;
-    private MutableLiveData<Long> mNumberofDevices;
     private MutableLiveData<String> mSelectedProperty;
+    private MutableLiveData<String> mDefaultProperty;
 
 
     public HomeViewModel() {
@@ -36,7 +30,7 @@ public class HomeViewModel extends ViewModel {
         mSelectedProperty = new MutableLiveData<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         updateWaterSensors();
-        //setMyProperties();
+        updateAirSensors();
     }
 
     public LiveData<String> getText() {
@@ -62,6 +56,24 @@ public class HomeViewModel extends ViewModel {
                 break;
         }
         return choice;
+    }
+
+    public MutableLiveData<String> updateWaterSensorName(String property, int id) {
+        final MutableLiveData<String> sensor = new MutableLiveData<>();
+        mDatabase.child(property).child("Water sensor " + id).child("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.getValue(String.class);
+                sensor.setValue(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return sensor;
     }
 
     public MutableLiveData<String> updateWaterSensorState(String property, int id) {
@@ -108,13 +120,87 @@ public class HomeViewModel extends ViewModel {
         return mSelectedProperty;
     }
 
-    public MutableLiveData<String> updateWaterSensorName(String property, int id) {
+    public MutableLiveData<String> getDefaultProperty() {
+        for(int i = 1; i <= 2; i++) {
+            mDatabase.child("Property" + i).child("Default").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    boolean Default = dataSnapshot.getValue(Boolean.class);
+                    if(Default){
+                        mDefaultProperty.setValue(dataSnapshot.getRef().getParent().toString());
+                        System.out.println("Default property " + mDefaultProperty.getValue());
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        return mDefaultProperty;
+    }
+
+    public MutableLiveData<String> updateAirSensorName(String property, int id) {
         final MutableLiveData<String> sensor = new MutableLiveData<>();
-        mDatabase.child(property).child("Water sensor " + id).child("Name").addValueEventListener(new ValueEventListener() {
+        mDatabase.child(property).child("Air quality " + id).child("Name").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.getValue(String.class);
                 sensor.setValue(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return sensor;
+    }
+
+    public MutableLiveData<String> updateAirSensorGas(String property, int id) {
+        final MutableLiveData<String> sensor = new MutableLiveData<>();
+        mDatabase.child(property).child("Air quality " + id).child("Gas").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int gas = dataSnapshot.getValue(Integer.class);
+                sensor.setValue("Current gas level: " + gas);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return sensor;
+    }
+
+    public MutableLiveData<String> updateAirSensorHumidity(String property, int id) {
+        final MutableLiveData<String> sensor = new MutableLiveData<>();
+        mDatabase.child(property).child("Air quality " + id).child("Humidity").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int humidity = dataSnapshot.getValue(Integer.class);
+                sensor.setValue("Current humidity level: " + humidity);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+        return sensor;
+    }
+
+    public MutableLiveData<String> updateAirSensorTemperature(String property, int id) {
+        final MutableLiveData<String> sensor = new MutableLiveData<>();
+        mDatabase.child(property).child("Air quality " + id).child("Temperature").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int temperature = dataSnapshot.getValue(Integer.class);
+                sensor.setValue("Current temperature level: " + temperature);
             }
 
             @Override
@@ -145,5 +231,13 @@ public class HomeViewModel extends ViewModel {
                     break;
             }
         }
+    }
+
+    public void updateAirSensors() {
+        air_quality_1.clear();
+        air_quality_1.add(updateAirSensorName("Property1", 1));
+        air_quality_1.add(updateAirSensorGas("Property1", 1));
+        air_quality_1.add(updateAirSensorHumidity("Property1", 1));
+        air_quality_1.add(updateAirSensorTemperature("Property1", 1));
     }
 }

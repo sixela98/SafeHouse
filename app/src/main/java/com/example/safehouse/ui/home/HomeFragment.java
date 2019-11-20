@@ -32,10 +32,16 @@ public class HomeFragment extends Fragment {
     private RelativeLayout water_sensor_layout_2;
     private TextView water_sensor_name_2;
     private TextView water_sensor_state_2;
+    private RelativeLayout air_quality_layout;
+    private TextView air_quality_name;
+    private TextView air_quality_gas;
+    private TextView air_quality_humidity;
+    private TextView air_quality_temperature;
     private TextView water_sensor_title;
+    private TextView air_quality_sensor_title;
     private Button button;
     NotificationManager notificationManager;
-    private int numdevices = 2;
+    private int numdevices = 3;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,8 +51,8 @@ public class HomeFragment extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_home, container, false);
         notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
+        air_quality_sensor_title = root.findViewById(R.id.air_quality_sensor_title);
         updateUI(root);
-        button = (Button)root.findViewById(R.id.air_quality_1);
         return root;
     }
 
@@ -81,6 +87,7 @@ public class HomeFragment extends Fragment {
 
     public void updateUI(View root){
         water_sensor_title.setText("My water sensors");
+        air_quality_sensor_title.setText("My air quality sensors");
         homeViewModel.getSelectedProperty().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -116,7 +123,7 @@ public class HomeFragment extends Fragment {
                                 if (s.contains("Dry")) {
                                     sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
                                     water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
-
+                                    water_sensor_layout_1.setBackground(getResources().getDrawable(R.drawable.buttonshape));
                                 } else if (s.contains("Wet")) {
                                     sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
                                     water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
@@ -140,11 +147,42 @@ public class HomeFragment extends Fragment {
                                 water_sensor_state_2.setText(s);
                                 if (s.contains("Dry")) {
                                     sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
-                                    water_sensor_layout_2.setBackgroundColor(Color.GREEN);
+                                    water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.green));
                                 } else if (s.contains("Wet")) {
                                     sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
-                                    water_sensor_layout_2.setBackgroundColor(Color.RED);
+                                    water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.red));
                                 }
+                            }
+                        });
+                        break;
+                    case 3:
+                        air_quality_layout = root.findViewById(R.id.air_quality_1);
+                        air_quality_name = air_quality_layout.findViewById(R.id.air_quality_sensor_name);
+                        air_quality_gas = air_quality_layout.findViewById(R.id.air_quality_sensor_gas);
+                        air_quality_humidity = air_quality_layout.findViewById(R.id.air_quality_sensor_humidity);
+                        air_quality_temperature = air_quality_layout.findViewById(R.id.air_quality_sensor_temperature);
+                        homeViewModel.getmDevice(propertyid, deviceid).get(0).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                air_quality_name.setText(s);
+                            }
+                        });
+                        homeViewModel.getmDevice(propertyid, deviceid).get(1).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                air_quality_gas.setText(s);
+                            }
+                        });
+                        homeViewModel.getmDevice(propertyid, deviceid).get(2).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                air_quality_humidity.setText(s);
+                            }
+                        });
+                        homeViewModel.getmDevice(propertyid, deviceid).get(3).observe(this, new Observer<String>() {
+                            @Override
+                            public void onChanged(String s) {
+                                air_quality_temperature.setText(s);
                             }
                         });
                         break;
