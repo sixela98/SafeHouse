@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,12 +25,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.safehouse.Database;
+import com.example.safehouse.OnGetDataListener;
 import com.example.safehouse.R;
 import com.example.safehouse.object_classes.AirQualitySensor;
 import com.example.safehouse.object_classes.Property;
 import com.example.safehouse.object_classes.Room;
 import com.example.safehouse.object_classes.User;
 import com.example.safehouse.object_classes.WaterSensor;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 
@@ -48,17 +55,20 @@ public class HomeFragment extends Fragment {
     private TextView air_quality_temperature;
     private TextView water_sensor_title;
     private TextView air_quality_sensor_title;
-    private TextView testText;
     private Button button;
     NotificationManager notificationManager;
     private int numdevices = 3;
     private View root;
     private Observer<User> userObserver;
     private Observer<Property> propertyObserver;
-    private Observer<Room> roomObserver;
-    private Observer<WaterSensor> waterSensorNameObserver;
+    private Observer<String> roomNameObserver;
+    private Observer<WaterSensor> waterSensorObserver;
+    private Observer<String> waterSensorNameObserver;
     private Observer<WaterSensor> waterSensorStateObserver;
     private Observer<AirQualitySensor> airQualitySensorObserver;
+    private ListView userList;
+    private ListView propertyList;
+    private ListView roomList;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,7 +80,18 @@ public class HomeFragment extends Fragment {
         notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
         air_quality_sensor_title = root.findViewById(R.id.air_quality_sensor_title);
-        testText = root.findViewById(R.id.testTextView);
+        userList = root.findViewById(R.id.userList);
+        propertyList = root.findViewById(R.id.propertyList);
+        roomList = root.findViewById(R.id.roomList);
+        setUserListView();
+        setPropertyListView(1);
+        propertyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setRoomListView(1, position+1);
+            }
+        });
+        //setTestText();
         //updateUI(root);
         return root;
     }
@@ -79,15 +100,232 @@ public class HomeFragment extends Fragment {
         return instance;
     }
 
+    public void setTestText() {
+        String usersPath = "/u";
+        new Database().getSize(usersPath, new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int userSize = (int)dataSnapshot.getChildrenCount();
+                ArrayList<String> userArrayList = new ArrayList<>();
+                for(int i = 1; i <= userSize; i++) {
+                    String userPath = usersPath + "/u";
+                    new Database().readData(userPath + i + "/e", new OnGetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            String n = dataSnapshot.getValue(String.class);
+                            userArrayList.add(n);
+                            ArrayAdapter userAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, userArrayList);
+                            userList.setAdapter(userAdapter);
+                            System.out.println("The size of users: " + userArrayList.size());
+                            ArrayList<String> propertyArrayList = new ArrayList<>();
+                            for(int j = 1; j <= userArrayList.size(); j++) {
+                                String propertiesPath = userPath + j + "/p";
+                                new Database().getSize(propertiesPath, new OnGetDataListener() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        int propertySize = (int)dataSnapshot.getChildrenCount();
+                                        for(int k = 1; k <= propertySize; k++) {
+                                            String propertyPath = propertiesPath + "/p";
+                                            new Database().readData(propertyPath + k + "/n", new OnGetDataListener() {
+                                                @Override
+                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                    String n = dataSnapshot.getValue(String.class);
+                                                    propertyArrayList.add(n);
+                                                    ArrayAdapter propertyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, propertyArrayList);
+                                                    propertyList.setAdapter(propertyAdapter);
+                                                    System.out.println("The size of property: " + propertyArrayList.size());
+                                                }
+
+                                                @Override
+                                                public void onStart() {
+
+                                                }
+
+                                                @Override
+                                                public void onFailure(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onStart() {
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onFailure(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setUserListView() {
+        String usersPath = "/u";
+        new Database().getSize(usersPath, new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int userSize = (int)dataSnapshot.getChildrenCount();
+                ArrayList<String> userArrayList = new ArrayList<>();
+                for(int i = 1; i <= userSize; i++) {
+                    String userPath = usersPath + "/u";
+                    new Database().readData(userPath + i + "/e", new OnGetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            String n = dataSnapshot.getValue(String.class);
+                            userArrayList.add(n);
+                            ArrayAdapter userAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, userArrayList);
+                            userList.setAdapter(userAdapter);
+                            System.out.println("The size of users: " + userArrayList.size());
+                        }
+
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onFailure(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setPropertyListView(int userId) {
+        String propertiesPath = "/u/u" + userId + "/p";
+        new Database().getSize(propertiesPath, new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int propertySize = (int)dataSnapshot.getChildrenCount();
+                ArrayList<String> propertyArrayList = new ArrayList<>();
+                for(int i = 1; i <= propertySize; i++) {
+                    String propertyPath = propertiesPath + "/p";
+                    new Database().readData(propertyPath + i + "/n", new OnGetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            String n = dataSnapshot.getValue(String.class);
+                            propertyArrayList.add(n);
+                            ArrayAdapter propertyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, propertyArrayList);
+                            propertyList.setAdapter(propertyAdapter);
+                            System.out.println("The size of property: " + propertyArrayList.size());
+                        }
+
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onFailure(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setRoomListView(int userId, int propertyId) {
+        String roomsPath = "/u/u" + userId + "/p/p" + propertyId + "/r";
+        new Database().getSize(roomsPath, new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int roomSize = (int)dataSnapshot.getChildrenCount();
+                ArrayList<String> roomArrayList = new ArrayList<>();
+                for(int i = 1; i <= roomSize; i++) {
+                    String roomPath = roomsPath + "/r";
+                    new Database().readData(roomPath + i + "/n", new OnGetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            String n = dataSnapshot.getValue(String.class);
+                            roomArrayList.add(n);
+                            ArrayAdapter roomAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, roomArrayList);
+                            roomList.setAdapter(roomAdapter);
+                            System.out.println("The size of room: " + roomArrayList.size());
+                        }
+
+                        @Override
+                        public void onStart() {
+
+                        }
+
+                        @Override
+                        public void onFailure(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void updateTest(ArrayList<MutableLiveData<User>> users) {
-        observeDevice(users, 0, 0, 0, "Water Sensor", 0);
+        //observeDevice(users, 0, 0, 0, "Water Sensor", 0);
     }
 
     public void observeDevice(ArrayList<MutableLiveData<User>> users, int userId, int propertyId, int roomId, String device, int deviceId) {
-        water_sensor_layout_1 = root.findViewById(R.id.water_sensor_1);
-        water_sensor_name_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_name);
-        water_sensor_state_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_state);
-        userObserver = new Observer<User>() {
+
+      /*  userObserver = new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 user.getProperty(0).observe(getActivity(), propertyObserver);
@@ -158,7 +396,7 @@ public class HomeFragment extends Fragment {
                 });
             }
         };
-        users.get(0).observe(getActivity(),userObserver);
+        users.get(0).observe(getActivity(),userObserver);*/
     }
 
     public void sendNotification(int id, String title, String text){

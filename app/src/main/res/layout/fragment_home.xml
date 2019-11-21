@@ -5,6 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ListView
+        android:id="@+id/roomList"
+        android:layout_width="114dp"
+        android:layout_height="169dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="259dp"
+        android:layout_marginBottom="31dp" />
+
+    <ListView
+        android:id="@+id/userList"
+        android:layout_width="114dp"
+        android:layout_height="169dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="34dp"
+        android:layout_marginBottom="28dp" />
+
     <include
         android:id="@+id/water_sensor_1"
         layout="@layout/content_water_sensor_button"
@@ -57,16 +75,14 @@
         android:layout_marginLeft="33dp"
         android:layout_marginTop="361dp" />
 
-    <TextView
-        android:id="@+id/testTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ListView
+        android:id="@+id/propertyList"
+        android:layout_width="114dp"
+        android:layout_height="169dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="160dp"
-        android:layout_marginLeft="160dp"
-        android:layout_marginBottom="122dp"
-        android:text="TextView" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="144dp"
+        android:layout_marginBottom="30dp" />
 
 </RelativeLayout>

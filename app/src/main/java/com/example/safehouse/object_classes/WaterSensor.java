@@ -3,6 +3,8 @@ package com.example.safehouse.object_classes;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.safehouse.Database;
+import com.example.safehouse.OnGetDataListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,15 +50,21 @@ public class WaterSensor {
 
     public MutableLiveData<String> setName() {
         MutableLiveData<String> name = new MutableLiveData<>();
-        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("w").child("w" + id).child("n").addValueEventListener(new ValueEventListener() {
+        String path = "/u/u" + userId + "/p/p" + propertyId + "/r/r" + roomId + "/w/w" + id + "/n";
+        new Database().readData(path, new OnGetDataListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 String n = dataSnapshot.getValue(String.class);
                 name.setValue(n);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
 
             }
         });
@@ -69,9 +77,10 @@ public class WaterSensor {
 
     public MutableLiveData<String> setState() {
         MutableLiveData<String> state = new MutableLiveData<>();
-        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("w").child("w" + id).child("s").addValueEventListener(new ValueEventListener() {
+        String path = "/u/u" + userId + "/p/p" + propertyId + "/r/r" + roomId + "/w/w" + id + "/n";
+        new Database().readData(path, new OnGetDataListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 Boolean s = dataSnapshot.getValue(Boolean.class);
                 if(s){
                     state.setValue("Water detected!");
@@ -81,7 +90,12 @@ public class WaterSensor {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
 
             }
         });

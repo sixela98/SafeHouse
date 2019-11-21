@@ -1,9 +1,10 @@
 package com.example.safehouse;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 public interface OnGetDataListener {
     void onSuccess(DataSnapshot dataSnapshot);
     void onStart();
-    void onFailure();
+    void onFailure(DatabaseError databaseError);
 }

@@ -3,6 +3,8 @@ package com.example.safehouse.object_classes;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.safehouse.Database;
+import com.example.safehouse.OnGetDataListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,8 @@ public class AirQualitySensor {
 
     public MutableLiveData<Double> setTemp() {
         MutableLiveData<Double> temp = new MutableLiveData<>();
+        String path = "/u/u" + userId + "/p/p" + propertyId + "/r/r" + roomId + "/a/t" + id;
+
         mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("a").child("t" + id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -66,6 +70,8 @@ public class AirQualitySensor {
 
     public MutableLiveData<Double> setHumidity() {
         MutableLiveData<Double> humidity = new MutableLiveData<>();
+        String path = "/u/u" + userId + "/p/p" + propertyId + "/r/r" + roomId + "/a/h" + id;
+
         mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("a").child("h" + id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,15 +93,21 @@ public class AirQualitySensor {
 
     public MutableLiveData<Double> setGas() {
         MutableLiveData<Double> gas = new MutableLiveData<>();
-        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("a").child("g" + id).addValueEventListener(new ValueEventListener() {
+        String path = "/u/u" + userId + "/p/p" + propertyId + "/r/r" + roomId + "/a/g" + id;
+        new Database().readData(path, new OnGetDataListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 Double g = dataSnapshot.getValue(Double.class);
                 gas.setValue(g);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(DatabaseError databaseError) {
 
             }
         });

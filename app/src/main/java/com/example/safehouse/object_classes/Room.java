@@ -29,7 +29,7 @@ public class Room {
         this.propertyId = propertyId;
         this.name = setName();
         this.selected = selected;
-        this.waterSensorArrayList = new ArrayList<>();
+        this.waterSensorArrayList = setWaterSensorArrayList();
         this.airQualitySensorArrayList = new ArrayList<>();
     }
 
@@ -54,12 +54,34 @@ public class Room {
         return name;
     }
 
+    public MutableLiveData<String> getName() {
+        return this.name;
+    }
+
     public ArrayList<MutableLiveData<WaterSensor>> getWaterSensorArrayList() {
         return waterSensorArrayList;
     }
 
-    public void setWaterSensorArrayList(ArrayList<MutableLiveData<WaterSensor>> waterSensorArrayList) {
-        this.waterSensorArrayList = waterSensorArrayList;
+    public ArrayList<MutableLiveData<WaterSensor>> setWaterSensorArrayList() {
+        ArrayList<MutableLiveData<WaterSensor>> waterSensors = new ArrayList<>();
+        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + id).child("w").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int)dataSnapshot.getChildrenCount();
+                for(int i = 1; i <= size; i++) {
+                    WaterSensor waterSensor = new WaterSensor(userId, propertyId, id, i);
+                    MutableLiveData<WaterSensor> waterSensorMutableLiveData = new MutableLiveData<>();
+                    waterSensorMutableLiveData.setValue(waterSensor);
+                    waterSensors.add(waterSensorMutableLiveData);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return waterSensors;
     }
 
     public void addWaterSensor(MutableLiveData<WaterSensor> waterSensor) {
