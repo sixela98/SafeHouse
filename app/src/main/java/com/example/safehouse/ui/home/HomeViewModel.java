@@ -1,10 +1,17 @@
 package com.example.safehouse.ui.home;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.safehouse.OnGetDataListener;
+import com.example.safehouse.object_classes.AirQualitySensor;
+import com.example.safehouse.object_classes.Property;
+import com.example.safehouse.object_classes.Room;
+import com.example.safehouse.object_classes.User;
+import com.example.safehouse.object_classes.WaterSensor;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,14 +30,228 @@ public class HomeViewModel extends ViewModel {
     private final DatabaseReference mDatabase;
     private MutableLiveData<String> mSelectedProperty;
     private MutableLiveData<String> mDefaultProperty;
+    private ArrayList<MutableLiveData<User>> userArrayList;
 
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
         mSelectedProperty = new MutableLiveData<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        userArrayList = new ArrayList<>();
         updateWaterSensors();
         updateAirSensors();
+        setUpUser(new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int size = (int)dataSnapshot.getChildrenCount();
+                userArrayList.clear();
+                for(int i = 1; i <= size; i++) {
+                    final int userId = i;
+                    MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+                    User user = new User(i, true);
+                    setUpProperty(i, new OnGetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            ArrayList<MutableLiveData<Property>> propertyArrayList = new ArrayList<>();
+                            int size = (int)dataSnapshot.getChildrenCount();
+                            propertyArrayList.clear();
+                            for(int i = 1; i <= size; i++) {
+                                final int propertyId = i;
+                                MutableLiveData<Property> propertyMutableLiveData = new MutableLiveData<>();
+                                Property property = new Property(userId, propertyId);
+                                setUpRoom(userId, propertyId, new OnGetDataListener() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        ArrayList<MutableLiveData<Room>> roomArrayList = new ArrayList<>();
+                                        int size = (int)dataSnapshot.getChildrenCount();
+                                        roomArrayList.clear();
+                                        for(int i = 1; i <= size; i++) {
+                                            final int roomId = i;
+                                            MutableLiveData<Room> roomMutableLiveData = new MutableLiveData<>();
+                                            Room room = new Room(userId, propertyId, roomId, true);
+                                            setUpWaterSensor(userId, propertyId, roomId, new OnGetDataListener() {
+                                                @Override
+                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                    ArrayList<MutableLiveData<WaterSensor>> waterSensorArrayList = new ArrayList<>();
+                                                    int size = (int)dataSnapshot.getChildrenCount();
+                                                    waterSensorArrayList.clear();
+                                                    for(int j = 1; j <= size; j++) {
+                                                        MutableLiveData<WaterSensor> waterSensorMutableLiveData = new MutableLiveData<>();
+                                                        WaterSensor waterSensor = new WaterSensor(userId, propertyId, roomId, j);
+                                                        waterSensorMutableLiveData.setValue(waterSensor);
+                                                        waterSensorArrayList.add(waterSensorMutableLiveData);
+                                                    }
+                                                    room.setWaterSensorArrayList(waterSensorArrayList);
+                                                }
+
+                                                @Override
+                                                public void onStart() {
+                                                    System.out.println("onStart Water");
+                                                }
+
+                                                @Override
+                                                public void onFailure() {
+                                                    System.out.println("onFail Water");
+                                                }
+                                            });
+                                            setUpAirQuality(userId, propertyId, i, new OnGetDataListener() {
+                                                @Override
+                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                    ArrayList<MutableLiveData<AirQualitySensor>> airQualitySensorArrayList= new ArrayList<>();
+                                                    int size = (int)dataSnapshot.getChildrenCount()/3;
+                                                    airQualitySensorArrayList.clear();
+                                                    for(int j = 1; j <= size; j++) {
+                                                        MutableLiveData<AirQualitySensor> airQualitySensorMutableLiveData = new MutableLiveData<>();
+                                                        AirQualitySensor airQualitySensor = new AirQualitySensor(userId, propertyId, roomId, j);
+                                                        airQualitySensorMutableLiveData.setValue(airQualitySensor);
+                                                        airQualitySensorArrayList.add(airQualitySensorMutableLiveData);
+                                                    }
+                                                    room.setAirQualitySensorArrayList(airQualitySensorArrayList);
+                                                    HomeFragment.getInstance().updateTest(userArrayList);
+                                                }
+
+                                                @Override
+                                                public void onStart() {
+                                                    System.out.println("onStart Air");
+                                                }
+
+                                                @Override
+                                                public void onFailure() {
+                                                    System.out.println("onFail Air");
+                                                }
+                                            });
+                                            roomMutableLiveData.setValue(room);
+                                            roomArrayList.add(roomMutableLiveData);
+                                        }
+                                        property.setRooms(roomArrayList);
+                                    }
+
+                                    @Override
+                                    public void onStart() {
+                                        System.out.println("onStart Room");
+                                    }
+
+                                    @Override
+                                    public void onFailure() {
+                                        System.out.println("onFail Room");
+                                    }
+                                });
+                                propertyMutableLiveData.setValue(property);
+                                propertyArrayList.add(propertyMutableLiveData);
+                            }
+                            user.setProperties(propertyArrayList);
+                        }
+
+                        @Override
+                        public void onStart() {
+                            System.out.println("onStart Property");
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            System.out.println("onFail Property");
+                        }
+                    });
+                    userMutableLiveData.setValue(user);
+                    userArrayList.add(userMutableLiveData);
+                }
+            }
+
+            @Override
+            public void onStart() {
+                System.out.println("onStart User");
+            }
+
+            @Override
+            public void onFailure() {
+                System.out.println("onFail User");
+            }
+        });
+    }
+
+    public ArrayList<MutableLiveData<User>> getUserArrayList() {
+        return userArrayList;
+    }
+
+    public void setUserArrayList(ArrayList<MutableLiveData<User>> users) {
+        this.userArrayList = users;
+    }
+
+    public void setUpUser(final OnGetDataListener listener) {
+        listener.onStart();
+        System.out.println("Just before entering\n");
+        mDatabase.child("u").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    public void setUpProperty(int userId, final OnGetDataListener listener) {
+        listener.onStart();
+        mDatabase.child("u").child("u" + userId).child("p").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+    }
+
+
+    public void setUpRoom(int userId, int propertyId, final OnGetDataListener listener) {
+        listener.onStart();
+        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    public void setUpWaterSensor(int userId, int propertyId, int roomId, final OnGetDataListener listener) {
+        listener.onStart();
+        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("w").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    public void setUpAirQuality(int userId, int propertyId, int roomId, final OnGetDataListener listener) {
+        listener.onStart();
+        mDatabase.child("u").child("u" + userId).child("p").child("p" + propertyId).child("r").child("r" + roomId).child("a").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
     }
 
     public LiveData<String> getText() {

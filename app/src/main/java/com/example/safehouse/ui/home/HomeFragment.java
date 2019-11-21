@@ -18,14 +18,23 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.safehouse.R;
+import com.example.safehouse.object_classes.AirQualitySensor;
+import com.example.safehouse.object_classes.Property;
+import com.example.safehouse.object_classes.Room;
+import com.example.safehouse.object_classes.User;
+import com.example.safehouse.object_classes.WaterSensor;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private static HomeFragment instance;
     private RelativeLayout water_sensor_layout_1;
     private TextView water_sensor_name_1;
     private TextView water_sensor_state_1;
@@ -39,21 +48,117 @@ public class HomeFragment extends Fragment {
     private TextView air_quality_temperature;
     private TextView water_sensor_title;
     private TextView air_quality_sensor_title;
+    private TextView testText;
     private Button button;
     NotificationManager notificationManager;
     private int numdevices = 3;
+    private View root;
+    private Observer<User> userObserver;
+    private Observer<Property> propertyObserver;
+    private Observer<Room> roomObserver;
+    private Observer<WaterSensor> waterSensorNameObserver;
+    private Observer<WaterSensor> waterSensorStateObserver;
+    private Observer<AirQualitySensor> airQualitySensorObserver;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
-        final View root = inflater.inflate(R.layout.fragment_home, container, false);
+        root = inflater.inflate(R.layout.fragment_home, container, false);
+        instance = this;
         notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
         air_quality_sensor_title = root.findViewById(R.id.air_quality_sensor_title);
-        updateUI(root);
+        testText = root.findViewById(R.id.testTextView);
+        //updateUI(root);
         return root;
+    }
+
+    public static HomeFragment getInstance() {
+        return instance;
+    }
+
+    public void updateTest(ArrayList<MutableLiveData<User>> users) {
+        observeDevice(users, 0, 0, 0, "Water Sensor", 0);
+    }
+
+    public void observeDevice(ArrayList<MutableLiveData<User>> users, int userId, int propertyId, int roomId, String device, int deviceId) {
+        water_sensor_layout_1 = root.findViewById(R.id.water_sensor_1);
+        water_sensor_name_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_name);
+        water_sensor_state_1 = water_sensor_layout_1.findViewById(R.id.water_sensor_state);
+        userObserver = new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                user.getProperty(0).observe(getActivity(), propertyObserver);
+            }
+        };
+        propertyObserver = new Observer<Property>() {
+            @Override
+            public void onChanged(Property property) {
+                property.getRoom(0).observe(getActivity(), roomObserver);
+            }
+        };
+        roomObserver = new Observer<Room>() {
+            @Override
+            public void onChanged(Room room) {
+                room.getWaterSensor(0).observe(getActivity(), waterSensorNameObserver);
+            }
+        };
+        waterSensorNameObserver = new Observer<WaterSensor>() {
+            @Override
+            public void onChanged(WaterSensor waterSensor) {
+                waterSensor.getName().observe(getActivity(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        water_sensor_name_1.setText(s);
+                        System.out.println("Water sensor name: " + s);
+                    }
+                });
+            }
+        };
+
+        users.get(0).observe(getActivity(),userObserver);
+
+        userObserver = new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                user.getProperty(0).observe(getActivity(), propertyObserver);
+            }
+        };
+        propertyObserver = new Observer<Property>() {
+            @Override
+            public void onChanged(Property property) {
+                property.getRoom(0).observe(getActivity(), roomObserver);
+            }
+        };
+        roomObserver = new Observer<Room>() {
+            @Override
+            public void onChanged(Room room) {
+                room.getWaterSensor(0).observe(getActivity(), waterSensorStateObserver);
+            }
+        };
+        waterSensorStateObserver = new Observer<WaterSensor>() {
+            @Override
+            public void onChanged(WaterSensor waterSensor) {
+                waterSensor.getState().observe(getActivity(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        water_sensor_state_1.setText(s);
+                        System.out.println("Water sensor state: " + s);
+                        if (s.contains("Dry")) {
+                            sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                            water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
+                            water_sensor_layout_1.setBackground(getResources().getDrawable(R.drawable.buttonshape));
+                        } else if (s.contains("Wet")) {
+                            sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                            water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
+                        }
+                    }
+                });
+            }
+        };
+        users.get(0).observe(getActivity(),userObserver);
     }
 
     public void sendNotification(int id, String title, String text){

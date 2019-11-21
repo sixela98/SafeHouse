@@ -57,4 +57,16 @@
         android:layout_marginLeft="33dp"
         android:layout_marginTop="361dp" />
 
+    <TextView
+        android:id="@+id/testTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="160dp"
+        android:layout_marginLeft="160dp"
+        android:layout_marginBottom="122dp"
+        android:text="TextView" />
+
 </RelativeLayout>
