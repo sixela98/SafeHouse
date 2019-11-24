@@ -171,6 +171,20 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onChanged(String s) {
                                 air_quality_gas.setText(s);
+                                if(s.contains("Excellent Quality")){
+                                    air_quality_gas.setTextColor(getResources().getColor(R.color.green));
+                                }
+                                if(s.contains("Great Quality")){
+                                    air_quality_gas.setTextColor(getResources().getColor(R.color.green));
+                                }
+                                if(s.contains("Good Quality")){
+                                    air_quality_gas.setTextColor(getResources().getColor(R.color.yellow));
+                                }
+                                if(s.contains("Bad Quality")){
+                                    air_quality_gas.setTextColor(getResources().getColor(R.color.orange));
+                                }
+                                if(s.contains("HARMFUL GAS DETECTED")){
+                                    air_quality_gas.setTextColor(getResources().getColor(R.color.red));                                }
                             }
                         });
                         homeViewModel.getmDevice(propertyid, deviceid).get(2).observe(this, new Observer<String>() {

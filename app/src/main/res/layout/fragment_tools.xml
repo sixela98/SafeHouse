@@ -19,23 +19,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/newProfileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Create a new profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_tools" />
-
-    <Button
         android:id="@+id/goToGraph"
         android:layout_width="179dp"
         android:layout_height="49dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="132dp"
         android:text="Graph"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newProfileButton" />
+        app:layout_constraintTop_toBottomOf="@+id/text_tools" />
 </androidx.constraintlayout.widget.ConstraintLayout>

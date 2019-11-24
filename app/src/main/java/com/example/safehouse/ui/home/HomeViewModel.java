@@ -164,7 +164,22 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int gas = dataSnapshot.getValue(Integer.class);
-                sensor.setValue("Current gas level: " + gas);
+                if( gas >= 40000){
+                    sensor.setValue("Excellent Quality");
+                }
+                else if( gas < 40000 && gas >= 30000){
+                    sensor.setValue("Great Quality");
+                }
+                else if( gas < 30000 && gas >= 20000){
+                    sensor.setValue("Good Quality");
+                }
+                else if( gas < 20000 && gas >= 10000){
+                    sensor.setValue("Bad Quality");
+                }
+                else if(gas < 10000){
+                    sensor.setValue("HARMFUL GAS DETECTED");
+                }
+
             }
 
             @Override
@@ -200,7 +215,7 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int temperature = dataSnapshot.getValue(Integer.class);
-                sensor.setValue("Current temperature level: " + temperature);
+                sensor.setValue("Current temperature level: " + temperature + "°C");
             }
 
             @Override

@@ -10,7 +10,7 @@ public class HelpViewModel extends ViewModel {
 
     public HelpViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is help fragment");
+        mText.setValue("");
     }
 
     public LiveData<String> getText() {
