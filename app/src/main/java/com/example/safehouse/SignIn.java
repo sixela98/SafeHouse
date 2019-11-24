@@ -2,18 +2,13 @@ package com.example.safehouse;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 public class SignIn extends AppCompatActivity {
 
@@ -70,12 +65,12 @@ protected SharedPreferenceHelper sharedPreferenceHelper;
 
 //Launch the main activity
     void launchMainActivity(){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, TestHomeActivity.class);
         startActivity(intent);
 }
     void launchLogginActivity(){
-        Intent intent = new Intent(this, LogginActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, LogginActivity.class);
+        //startActivity(intent);
     }
 //Returns true if name and password match
     boolean onMatching(String name, String password){

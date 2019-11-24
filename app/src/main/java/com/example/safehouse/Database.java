@@ -1,5 +1,4 @@
 package com.example.safehouse;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;

@@ -1,5 +1,4 @@
-package com.example.safehouse.ui.tools;
-
+package com.example.safehouse;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
