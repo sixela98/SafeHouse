@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_myprofiles"
+        android:id="@+id/nav_myproperties"
         android:name="com.example.safehouse.ui.MyProperties.MyPropertiesFragment"
         android:label="@string/menu_myproperties"
         tools:layout="@layout/fragment_myproperties" />

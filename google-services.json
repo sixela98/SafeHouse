@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "603357060865",
+    "firebase_url": "https://elec390-80d64.firebaseio.com",
+    "project_id": "elec390-80d64",
+    "storage_bucket": "elec390-80d64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603357060865:android:38ffbf10783abf4a924500",
+        "android_client_info": {
+          "package_name": "com.example.safehouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "603357060865-s4chom9u6f2979736vpghj8tam4hojvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.safehouse",
+            "certificate_hash": "ba9ffd16f3ce20a7ba69da0ca454590e724576aa"
+          }
+        },
+        {
+          "client_id": "603357060865-1g78jtira9mc660qkrshnmv01a5booli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA45pZLpbtiIZdImfA2SWAEl5PRmmQJtqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "603357060865-1g78jtira9mc660qkrshnmv01a5booli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
