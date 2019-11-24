@@ -1,9 +1,11 @@
 package com.example.safehouse;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.safehouse.ui.home.HomeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -12,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private SharedPreferenceHelper sharedPreferenceHelper;
+    private HomeViewModel homeViewModel;
 
 
     @Override
@@ -67,14 +72,30 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         sharedPreferenceHelper = new SharedPreferenceHelper(MainActivity.this);
-
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
     }
 
     protected void onStart() {
-    super.onStart();
+        super.onStart();
         String name = sharedPreferenceHelper.getProfileName();
         if(name == null)
             launchLogginActivity();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        startService(new Intent(this, NotificationService.class));
+        homeViewModel.getmDevice(1, 1).get(1).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s.contains("Dry")) {
+                    MyNotificationManager.sendNotification(getApplicationContext(), 1, "Water sensor 1", s);
+                } else if (s.contains("Wet")) {
+                    MyNotificationManager.sendNotification(getApplicationContext(),1, "Water sensor 1", s);
+                }
+            }
+        });
     }
 
     @Override

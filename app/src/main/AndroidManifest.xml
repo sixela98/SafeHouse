@@ -25,8 +25,20 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".SignIn"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ui.tools.Graph"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.tools.Graph">
+        </activity>
+        <service
+            android:name=".NotificationService"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action
+                    android:name="com.example.safehouse.NotificationService"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
