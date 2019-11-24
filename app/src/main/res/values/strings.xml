@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SafeHouse_Final</string>
+    <string name="app_name">SafeHouse</string>
     <string name="tab_text_1">My Properties</string>
     <string name="tab_text_2">My Rooms</string>
     <string name="tab_text_3">My Devices</string>
