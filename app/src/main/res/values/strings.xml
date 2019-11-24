@@ -11,5 +11,9 @@
     <string name="menu_myproperties">My Properties</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_help">Help</string>
+    <string name="welcome">Welcome to SafeHouse</string>
+    <string name="manage">Use My Properties to manage your Home view:</string>
+    <string name="instruction1">Press once to select a sensor.</string>
+    <string name="instruction2">Hold to set a sensor as default.</string>
     <string name="menu_disconnect">Disconnect</string>
 </resources>
