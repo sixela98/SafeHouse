@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.safehouse.MyNotificationManager;
 import com.example.safehouse.R;
 
 public class HomeFragment extends Fragment {
@@ -40,7 +41,6 @@ public class HomeFragment extends Fragment {
     private TextView water_sensor_title;
     private TextView air_quality_sensor_title;
     private Button button;
-    NotificationManager notificationManager;
     private int numdevices = 3;
 
 
@@ -49,41 +49,12 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_home, container, false);
-        notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         water_sensor_title = root.findViewById(R.id.water_sensor_title);
         air_quality_sensor_title = root.findViewById(R.id.air_quality_sensor_title);
         updateUI(root);
         return root;
     }
 
-    public void sendNotification(int id, String title, String text){
-        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "my_channel_id_" + id;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-
-            // Configure the notification channel.
-            notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity(), NOTIFICATION_CHANNEL_ID);
-
-        notificationBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.green_logo_round)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setContentInfo("Info");
-
-        notificationManager.notify(/*notification id*/id, notificationBuilder.build());
-    }
 
     public void updateUI(View root){
         water_sensor_title.setText("My water sensors");
@@ -121,11 +92,11 @@ public class HomeFragment extends Fragment {
                             public void onChanged(String s) {
                                 water_sensor_state_1.setText(s);
                                 if (s.contains("Dry")) {
-                                    sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                                    MyNotificationManager.sendNotification(getContext(), 1, String.valueOf(water_sensor_name_1.getText()), s);
                                     water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
                                     water_sensor_layout_1.setBackground(getResources().getDrawable(R.drawable.buttonshape));
                                 } else if (s.contains("Wet")) {
-                                    sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                                    MyNotificationManager.sendNotification(getActivity(),1, String.valueOf(water_sensor_name_1.getText()), s);
                                     water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
                                 }
                             }
@@ -146,10 +117,10 @@ public class HomeFragment extends Fragment {
                             public void onChanged(String s) {
                                 water_sensor_state_2.setText(s);
                                 if (s.contains("Dry")) {
-                                    sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
+                                    MyNotificationManager.sendNotification(getActivity(), 2, String.valueOf(water_sensor_name_2.getText()), s);
                                     water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.green));
                                 } else if (s.contains("Wet")) {
-                                    sendNotification(2, String.valueOf(water_sensor_name_2.getText()), s);
+                                    MyNotificationManager.sendNotification(getActivity(), 2, String.valueOf(water_sensor_name_2.getText()), s);
                                     water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.red));
                                 }
                             }
@@ -203,11 +174,11 @@ public class HomeFragment extends Fragment {
                     public void onChanged(String s) {
                         water_sensor_state_1.setText(s);
                         if (s.contains("Dry")) {
-                            sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                            MyNotificationManager.sendNotification(getActivity(),1, String.valueOf(water_sensor_name_1.getText()), s);
                             water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.green));
 
                         } else if (s.contains("Wet")) {
-                            sendNotification(1, String.valueOf(water_sensor_name_1.getText()), s);
+                            MyNotificationManager.sendNotification(getActivity(), 1, String.valueOf(water_sensor_name_1.getText()), s);
                             water_sensor_layout_1.setBackgroundColor(getResources().getColor(R.color.red));
                         }
                     }
