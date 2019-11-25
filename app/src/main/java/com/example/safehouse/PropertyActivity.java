@@ -22,6 +22,7 @@ public class PropertyActivity extends Fragment {
 
     private ListView propertiesListView;
     private PageViewModel pageViewModel;
+    ArrayList<String> propertyArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancesState) {
@@ -38,7 +39,7 @@ public class PropertyActivity extends Fragment {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 int propertySize = (int)dataSnapshot.getChildrenCount();
-                ArrayList<String> propertyArrayList = new ArrayList<>();
+                propertyArrayList.clear();
                 for(int i = 1; i <= propertySize; i++) {
                     String propertyPath = propertiesPath + "/p";
                     new Database().readData(propertyPath + i + "/n", new OnGetDataListener() {
