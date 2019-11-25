@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.safehouse.Objects.Room;
+import com.example.safehouse.adapter.RoomAdapter;
 import com.example.safehouse.ui.main.PageViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +26,7 @@ public class RoomActivity extends Fragment {
     private ListView roomsListView;
     private PageViewModel pageViewModel;
     private int propertyId = 1;
+    private ArrayList<Room> roomArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancesState) {
@@ -45,15 +48,17 @@ public class RoomActivity extends Fragment {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         int roomSize = (int)dataSnapshot.getChildrenCount();
-                        ArrayList<String> roomArrayList = new ArrayList<>();
+                        //ArrayList<String> roomArrayList = new ArrayList<>();
+                        roomArrayList.clear();
                         for(int i = 1; i <= roomSize; i++) {
                             String roomPath = roomsPath + "/r";
                             new Database().readData(roomPath + i + "/n", new OnGetDataListener() {
                                 @Override
                                 public void onSuccess(DataSnapshot dataSnapshot) {
                                     String n = dataSnapshot.getValue(String.class);
-                                    roomArrayList.add(n);
-                                    ArrayAdapter roomAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, roomArrayList);
+                                    //roomArrayList.add(n);
+                                    roomArrayList.add(new Room(n, "20", "30", "55660"));
+                                    RoomAdapter roomAdapter = new RoomAdapter(roomArrayList, getContext());
                                     roomsListView.setAdapter(roomAdapter);
                                     System.out.println("The size of room: " + roomArrayList.size());
                                 }
