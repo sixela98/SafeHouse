@@ -197,7 +197,7 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int humidity = dataSnapshot.getValue(Integer.class);
-                sensor.setValue("Current humidity level: " + humidity);
+                sensor.setValue("Current humidity: " + humidity + "%");
             }
 
             @Override
@@ -215,7 +215,7 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int temperature = dataSnapshot.getValue(Integer.class);
-                sensor.setValue("Current temperature level: " + temperature + "°C");
+                sensor.setValue("Current temperature: " + temperature + "°C");
             }
 
             @Override

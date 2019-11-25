@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
                                 water_sensor_state_2.setText(s);
                                 if (s.contains("Dry")) {
                                     MyNotificationManager.sendNotification(getActivity(), 2, String.valueOf(water_sensor_name_2.getText()), s);
-                                    water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.green));
+                                    water_sensor_layout_2.setBackground(getResources().getDrawable(R.drawable.buttonshape));;
                                 } else if (s.contains("Wet")) {
                                     MyNotificationManager.sendNotification(getActivity(), 2, String.valueOf(water_sensor_name_2.getText()), s);
                                     water_sensor_layout_2.setBackgroundColor(getResources().getColor(R.color.red));
